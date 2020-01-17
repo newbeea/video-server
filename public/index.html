@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <input type="file" id="file"></input>
+</body>
+<script>
+    let fileDom = document.getElementById('file'); // 为input 标签Dom元素
+    fileDom.onchange = function(e) {
+    let file = e.target.files[0];
+    let formData = new FormData();
+    formData.append('torrent', file);
+    let xhr = new XMLHttpRequest();
+    
+    xhr.open('POST', '/upload');
+    xhr.onload = function() {
+        console.log(xhr);
+    }
+    xhr.send(formData);
+}
+</script>
+</html>
