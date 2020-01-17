@@ -13,7 +13,34 @@ var storage = multer.diskStorage({
 })
 
 var upload = multer({ storage: storage })
-
+app.get('/video/*.mp4', function (req, res) {
+  const url = req.url
+  const body = `
+        <head>
+          <title>VIDEO</title>
+        </head>
+        <body style="padding-top: 100px;">
+          <p align="center">
+            <video   width="90%"  autoplay="autoplay" controls="controls" id="videoElement"></video>
+          </p>
+          <h1 align="center">${url}</h1>
+        </body>
+        <script src="https://cdn.bootcss.com/flv.js/1.5.0/flv.min.js"></script>
+        <script>
+          if (flvjs.isSupported()) {
+            var videoElement = document.getElementById('videoElement');
+            var flvPlayer = flvjs.createPlayer({
+              type: 'mp4',
+              url: '${url}'
+            });
+            flvPlayer.attachMediaElement(videoElement);
+            flvPlayer.load();
+            flvPlayer.play();
+          }
+        </script>
+        </html>`
+  res.send(body)
+})
 // Serve URLs like /ftp/thing as public/ftp/thing
 // The express.static serves the file contents
 // The serveIndex is this module serving the directory
@@ -21,7 +48,8 @@ app.use('/video', express.static('video/'), serveIndex('video/', {'icons': true}
 
 app.post('/upload', upload.single('torrent'), function (req, res) {
   var download = fork('../download.js', ['../' + req.file.path], {
-    cwd: 'video/'
+    cwd: 'video/',
+    stdio: 'ignore'
   })
   download.on('message', function(message) {
     console.log(message)
