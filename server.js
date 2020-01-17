@@ -14,7 +14,7 @@ var storage = multer.diskStorage({
 
 var upload = multer({ storage: storage })
 app.get('/video/*.mp4', function (req, res) {
-  const url = req.url
+  const url = req.url.replace('video', 'data')
   const body = `
         <head>
           <title>VIDEO</title>
@@ -41,6 +41,7 @@ app.get('/video/*.mp4', function (req, res) {
         </html>`
   res.send(body)
 })
+app.use('/data', express.static('video/'))
 // Serve URLs like /ftp/thing as public/ftp/thing
 // The express.static serves the file contents
 // The serveIndex is this module serving the directory
